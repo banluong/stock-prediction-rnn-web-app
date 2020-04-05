@@ -4,7 +4,6 @@ LSTM RNN model
 created by: Ban Luong
 """
 
-
 from keras.models import Sequential
 from keras.layers import LSTM
 from keras.layers import Dropout
