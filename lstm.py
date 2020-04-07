@@ -5,9 +5,7 @@ created by: Ban Luong
 """
 
 from keras.models import Sequential
-from keras.layers import LSTM
-from keras.layers import Dropout
-from keras.layers import Dense
+from keras.layers import LSTM, Dropout, Dense
 from keras.optimizers import Adam
 
 def build_model(LSTM_unit, dropout, lr, train):

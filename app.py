@@ -1,6 +1,10 @@
-from flask import Flask
-from flask import render_template
+from flask import Flask, render_template
 import matplotlib.pyplot as plt
+import yfinance as yf
+import pandas as pd
+import datetime
+from lstm import build_model
+import plotly
 
 app = Flask(__name__)
 
@@ -11,6 +15,18 @@ def home(name=None):
 @app.route('/about/')
 def about(name=None):
     return render_template("about.html", name=name)
+
+tickerSymbol = 'NFLX'
+today = datetime.date.today()
+
+def get_data(symbol, period, endDate):
+
+    columns = ['Open', 'High', 'Low', 'Close', 'Volume']
+    tickerData = yf.Ticker(symbol)
+    startDate = datetime.datetime(endDate.year-5,endDate.month,endDate.day)
+    tickerDf = tickerData.history(period=period, start=startDate, end=endDate)
+
+    return tickerDf[columns]
 
 def full_plot(y_inv, ytest_inv, ypred_inv):
     plt.plot(np.arange(0, len(y_inv)), y_inv, 'g', label="history")
