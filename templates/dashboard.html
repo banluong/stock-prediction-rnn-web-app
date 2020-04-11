@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>My First Dashboard</title>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="chart" id="bargraph">
+              <script>
+
+              </script>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+      <!-- D3.js -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+      <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+      <!-- Plotly.js -->
+      <script src="https://d14fo0winaifog.cloudfront.net/plotly-basic.js"></script>
+
+      <script type="text/javascript">
+
+          var graphs = {{graphJSON | safe}};
+
+          Plotly.plot('chart',graphs,{});
+</html>

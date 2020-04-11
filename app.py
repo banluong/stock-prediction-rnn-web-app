@@ -3,8 +3,10 @@ import matplotlib.pyplot as plt
 import yfinance as yf
 import pandas as pd
 import datetime
-from lstm import build_model
+#from lstm import build_model
 import plotly
+import plotly.offline as po
+from get_graph import candle_stick
 
 app = Flask(__name__)
 
@@ -23,14 +25,10 @@ ticker_symbol = 'NFLX'
 today = datetime.date.today()
 
 
-def get_data(symbol, period, end_date):
-
-    columns = ['Open', 'High', 'Low', 'Close', 'Volume']
-    ticker_data = yf.Ticker(symbol)
-    start_date = datetime.datetime(end_date.year-5, end_date.month, end_date.day)
-    tickerDf = ticker_data.history(period=period, start=start_date, end=end_date)
-
-    return tickerDf[columns]
+@app.route('/dashboard/')
+def dashboard(name=None):
+    chart = candle_stick(ticker_symbol, today)
+    return render_template("dashboard.html", name=name, plot=chart)
 
 
 def full_plot(y_inv, ytest_inv, ypred_inv):
