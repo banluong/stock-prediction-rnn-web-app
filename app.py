@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import matplotlib.pyplot as plt
 import yfinance as yf
 import pandas as pd
@@ -11,9 +11,21 @@ from get_graph import candle_stick
 app = Flask(__name__)
 
 
-@app.route('/')
+@app.route('/', methods=["POST", "GET"])
 def home(name=None):
-    return render_template("home.html", name=name)
+    try:
+        if request.method == 'POST':
+            search = request.form['search']
+            start = request.form['start']
+            result = candle_stick(search,start)
+            if result == True:
+                return render_template("dashboard.html", name=name, plot=result)
+            else:
+                return render_template('home.html', sign='notfound')
+        else:
+            return render_template("home.html", name=name)
+    except Exception as e:
+        return render_template("home.html", sign=e)
 
 
 @app.route('/about/')
@@ -21,8 +33,8 @@ def about(name=None):
     return render_template("about.html", name=name)
 
 
-ticker_symbol = 'NFLX'
-today = datetime.date.today()
+#ticker_symbol = 'NFLX'
+#today = datetime.date.today()
 
 
 @app.route('/dashboard/')
