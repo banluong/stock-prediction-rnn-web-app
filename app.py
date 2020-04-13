@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+from flask import redirect, url_for
 import matplotlib.pyplot as plt
 import yfinance as yf
 import pandas as pd
@@ -10,16 +11,20 @@ from get_graph import candle_stick
 
 app = Flask(__name__)
 
+@app.route('/dashboard/')
+def dashboard(name=None):
+    #chart = candle_stick(search, start)
+    return render_template("dashboard.html", name=name)
 
-@app.route('/', methods=["POST", "GET"])
+@app.route('/', methods=["GET", "POST"])
 def home(name=None):
     try:
         if request.method == 'POST':
             search = request.form['search']
-            start = request.form['start']
-            result = candle_stick(search,start)
+            #start = request.form['start']
+            result = candle_stick(search,datetime.date.today())
             if result == True:
-                return render_template("dashboard.html", name=name, plot=result)
+                return redirect(url_for("/dashboard/"))
             else:
                 return render_template('home.html', sign='notfound')
         else:
@@ -37,10 +42,7 @@ def about(name=None):
 #today = datetime.date.today()
 
 
-@app.route('/dashboard/')
-def dashboard(name=None):
-    chart = candle_stick(ticker_symbol, today)
-    return render_template("dashboard.html", name=name, plot=chart)
+
 
 
 def full_plot(y_inv, ytest_inv, ypred_inv):

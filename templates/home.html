@@ -3,17 +3,14 @@
 <div class="home">
     <h1 align="center">Homepage</h1>
     <h3 align="center">This is a test webpage for visuals of Stock prices</h3>
-      <form style="padding-top: 70px" action="/dashboard/" method="post">
+      <form style="padding-top: 70px" action="{{ url_for('dashboard') }}" method="post">
         <div class="form-row justify-content-center"><div class="col-7">
             <input class="form-control" type="date" placeholder="example:365 " name="start" id="search0">
           </div><div class="col-7">
-            <input class="form-control" type="search" placeholder="NFLX " name="search" id="search1">
+            <input class="form-control" type="search" placeholder="Enter Ticker Symbol " name="search" id="search1">
           </div>
           <div class="col-1">
-            <button class="btn btn-outline-success" href="/dashboard/" type="submit">GO!</button>
-          </div>
-          <div class="">
-             <p><a href="/dashboard/">To Dashboard</a></p>
+            <button class="btn btn-outline-success" href="{{ url_for('dashboard') }}" type="submit">GO!</button>
           </div>
         </div>
   </form>
