@@ -10,7 +10,7 @@ python stock_dash.py
 ```
 
 
-Then in the web browser address bar enter localhost:8050 (where 8050 is the port number to run `stock_dash.py`.)
+Then in the web browser address bar enter `localhost:8050` (where `8050` is the port number to run `stock_dash.py`.)
 
 **Disclaimer:** I'm not a financial expert. This project is for educational and entertainment purposes only to demonstrate and application of TensorFlow, Flask and other visualisations.
 
