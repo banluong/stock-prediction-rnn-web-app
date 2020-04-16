@@ -12,6 +12,12 @@ app = dash.Dash()
 
 symbol = "TSLA"
 
+options=[
+    {'label': 'Netflix', 'value': 'NFLX'},
+    {'label': 'Tesla', 'value': 'TSLA'},
+    {'label': 'Google', 'value': 'GOOGL'}
+]
+
 # candle_stick
 ticker_data = yf.Ticker(symbol)
 end_date = datetime.date.today()
@@ -41,12 +47,6 @@ layout = go.Layout(title={
 
 figure = go.Figure(data=data, layout=layout)
 
-graph = dcc.Graph(
-    id='graph-with-slider',
-    figure=figure
-)
-
-
 colors = {
     'background': '#F5FFFA',
     'text': '#00FA9A'
@@ -66,60 +66,38 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
         'color': colors['text']
     }),
 
-    html.Label('Dropdown'),
-    dcc.Dropdown(
-        options=[
-            {'label': 'Netflix', 'value': 'NFLX'},
-            {'label': 'Tesla', 'value': 'TSLA'},
-            {'label': 'Google', 'value': 'GOOGL'}
-        ],
-        value='GOOGL'
-    ),
+    html.H3('Enter a stock symbol:', style={'paddingRight': '30px'}),
+	dcc.Dropdown(
+		id='my_ticker_symbol',
+		options = options,
+		value = ['TSLA'],
+		multi = True
+		# style={'fontSize': 24, 'width': 75}
+		),
 
-    html.Label('Multi-Select Dropdown'),
-    dcc.Dropdown(
-        options=[
-            {'label': 'Netflix', 'value': 'NFLX'},
-            {'label': 'Tesla', 'value': 'TSLA'},
-            {'label': 'Google', 'value': 'GOOGL'}
-        ],
-        value=['NFLX', 'TSLA'],
-        multi=True
-    ),
+    html.Div([html.H3('Enter start / end date:'),
+	dcc.DatePickerRange(id='my_date_picker',
+						min_date_allowed = datetime.datetime(2015,1,1),
+						max_date_allowed = datetime.date.today(),
+						start_date = datetime.datetime(2019, 1, 1),
+						end_date = datetime.date.today()
+	)
 
-    html.Label('Radio Items'),
-    dcc.RadioItems(
-        options=[
-            {'label': 'Netflix', 'value': 'NFLX'},
-            {'label': 'Tesla', 'value': 'TSLA'},
-            {'label': 'Google', 'value': 'GOOGL'}
-        ],
-        value='TSLA'
-    ),
+], style={'display':'inline-block'}),
+	html.Div([
+		html.Button(id='submit-button',
+					n_clicks = 0,
+					children = 'Submit',
+					style = {'fontSize': 24, 'marginLeft': '30px'}
 
-    html.Label('Checkboxes'),
-    dcc.Checklist(
-        options=[
-            {'label': 'Netflix', 'value': 'NFLX'},
-            {'label': 'Tesla', 'value': 'TSLA'},
-            {'label': 'Google', 'value': 'GOOGL'}
-        ],
-        value=['NFLX', 'TSLA']
-    ),
+		)
 
-    html.Label('Text Input'),
-    dcc.Input(value='TSLA', type='text'),
-
-    html.Label('Slider'),
-    dcc.Slider(
-        min=0,
-        max=9,
-        marks={i: 'Label {}'.format(i) if i == 1 else str(i) for i in range(1, 6)},
-        value=5,
-    ),
-
+	], style={'display': 'inline-block'}),
     # Plotly stock graph
-    graph
+    dcc.Graph(
+        id='graph-with-slider',
+        figure=figure
+    )
 ])
 
 if __name__ == '__main__':
