@@ -1,17 +1,15 @@
-# https://dash.plotly.com/layout
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 import pandas as pd
-import datetime
+from datetime import datetime
 import yfinance as yf
 import plotly.graph_objects as go
 
 
 app = dash.Dash()
 
-#symbol = "TSLA"
 options = [
     {'label': 'Netflix', 'value': 'NFLX'},
     {'label': 'Tesla', 'value': 'TSLA'},
@@ -36,7 +34,7 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
         'textAlign': 'center',
         'color': colors['text']
     }),
-
+    # Ticker Symbol Dropdown
     html.H3('Enter a stock symbol:', style={'paddingRight': '30px'}),
     dcc.Dropdown(
         id='dropdown_symbol',
@@ -45,21 +43,24 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
         multi=False
         # style={'fontSize': 24, 'width': 75}
     ),
-
+    # Date Range
     html.Div([html.H3('Enter start / end date:'),
-              dcc.DatePickerRange(id='date_range',
-                                  min_date_allowed=datetime.datetime(2015, 1, 1),
-                                  max_date_allowed=datetime.date.today(),
-                                  start_date=datetime.datetime(2019, 1, 1),
-                                  end_date=datetime.date.today()
-                                  )
+              dcc.DatePickerRange(
+                  id='date_range',
+                  min_date_allowed=datetime(2015, 1, 1),
+                  max_date_allowed=datetime.now(),
+                  start_date=datetime(2019, 1, 1),
+                  end_date=datetime.now(),
+                  number_of_months_shown=2
+                  )
 
               ], style={'display': 'inline-block'}),
+    # Submit Button
     html.Div([
         html.Button(id='submit_button',
                     n_clicks=0,
                     children='Submit',
-                    style={'fontSize': 24, 'marginLeft': '30px'}
+                    style={'fontSize': 18, 'marginLeft': '30px'}
 
                     )
 
@@ -73,14 +74,15 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
 # app callback to update graph
 @app.callback(
     Output('graph_candle', 'figure'),
-    [Input('dropdown_symbol', 'value')])
+    [Input('dropdown_symbol', 'value'),
+     Input('date_range', 'start_date'),
+     Input('date_range', 'end_date')])
 
-def update_graph(symbol):
+def update_graph(symbol,start_date, end_date):
     # candle_stick
     ticker_data = yf.Ticker(symbol)
-    end_date = datetime.date.today()
-    start_date = datetime.datetime(end_date.year-1, end_date.month, end_date.day)
-    df = ticker_data.history(period='1d', start=start_date, end=end_date)
+    df = ticker_data.history(period='1d', start=datetime(2015,1,1), end=datetime.now())
+    df = df.loc[start_date:end_date]
 
     first = go.Candlestick(x=df.index,
                            open=df['Open'],
@@ -104,7 +106,7 @@ def update_graph(symbol):
     )
 
     figure = {'data': data, 'layout': layout}
-    return (figure)
+    return figure
 
 if __name__ == '__main__':
     app.run_server(debug=True)
