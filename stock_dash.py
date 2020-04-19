@@ -17,8 +17,8 @@ options = [
 ]
 
 colors = {
-    'background': '#F5FFFA',
-    'text': '#00FA9A'
+    'background': '#191414',
+    'text': '#1DB954'
 }
 
 app.layout = html.Div(style={'backgroundColor': colors['background']}, children=[
@@ -35,7 +35,7 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
         'color': colors['text']
     }),
     # Ticker Symbol Dropdown
-    html.H3('Enter a stock symbol:', style={'paddingRight': '30px'}),
+    html.H3('Enter a stock symbol:', style={'paddingRight': '30px', 'color': colors['text']}),
     dcc.Dropdown(
         id='dropdown_symbol',
         options = options,
@@ -47,6 +47,7 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
     html.Div([html.H3('Enter start / end date:'),
               dcc.DatePickerRange(
                   id='date_range',
+                  start_date_placeholder_text='Start Date',
                   min_date_allowed=datetime(2015, 1, 1),
                   max_date_allowed=datetime.now(),
                   start_date=datetime(2019, 1, 1),
@@ -54,13 +55,13 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
                   number_of_months_shown=2
                   )
 
-              ], style={'display': 'inline-block'}),
+              ], style={'display': 'inline-block', 'color': colors['text']}),
     # Submit Button
     html.Div([
         html.Button(id='submit_button',
                     n_clicks=0,
                     children='Submit',
-                    style={'fontSize': 18, 'marginLeft': '30px'}
+                    style={'fontSize': 18, 'marginLeft': '30px', 'backgroundColor': colors['text']}
 
                     )
 
@@ -76,13 +77,18 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
     Output('graph_candle', 'figure'),
     [Input('dropdown_symbol', 'value'),
      Input('date_range', 'start_date'),
-     Input('date_range', 'end_date')])
+     Input('date_range', 'end_date'),
+     Input('submit_button', 'n_clicks')])
 
-def update_graph(symbol,start_date, end_date):
-    # candle_stick
-    ticker_data = yf.Ticker(symbol)
-    df = ticker_data.history(period='1d', start=datetime(2015,1,1), end=datetime.now())
-    df = df.loc[start_date:end_date]
+def update_graph(symbol,start_date, end_date, n_clicks):
+    if n_clicks==0:
+        ticker_data = yf.Ticker('TSLA')
+        df = ticker_data.history(period='1d', start=datetime(2015,1,1), end=datetime.now())
+
+    else:
+        ticker_data = yf.Ticker(symbol)
+        df = ticker_data.history(period='1d', start=start_date, end=end_date)
+
 
     first = go.Candlestick(x=df.index,
                            open=df['Open'],
