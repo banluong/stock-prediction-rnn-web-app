@@ -11,9 +11,13 @@ import plotly.graph_objects as go
 app = dash.Dash()
 
 options = [
+    {'label': 'Apple', 'value': 'AAPL'},
+    {'label': 'Facebook', 'value': 'FB'},
+    {'label': 'Google', 'value': 'GOOGL'},
+    {'label': 'IBM', 'value': 'IBM'},
+    {'label': 'Microsoft', 'value': 'MSFT'},
     {'label': 'Netflix', 'value': 'NFLX'},
-    {'label': 'Tesla', 'value': 'TSLA'},
-    {'label': 'Google', 'value': 'GOOGL'}
+    {'label': 'Tesla', 'value': 'TSLA'}
 ]
 
 colors = {
