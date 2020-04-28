@@ -25,7 +25,7 @@ colors = {
     'text': '#1DB954'
 }
 
-app.layout = html.Div(style={'backgroundColor': colors['background']}, children=[
+app.layout = html.Div(style={'backgroundColor': colors['background'], 'font-family': "Helvetica"}, children=[
     html.H1(
         children='Stock Price Dashboard',
         style={
@@ -45,7 +45,6 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
         options=options,
         value='TSLA',
         multi=False
-        # style={'fontSize': 24, 'width': 75}
     ),
     # Date Range
     html.Div([html.H3('Enter start / end date:'),
@@ -72,13 +71,51 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
     ], style={'display': 'inline-block'}),
     # Plotly stock graph
     dcc.Graph(
-        id='graph_candle'
+        id='graph_scatter'
     ),
+    dcc.Graph(
+        id='graph_candle'
+    )
 ])
 
-# app callback to update graph
+# app callback to update stock closing values
 
 
+@app.callback(
+    Output('graph_scatter', 'figure'),
+    [Input('dropdown_symbol', 'value'),
+     Input('date_range', 'start_date'),
+     Input('date_range', 'end_date'),
+     Input('submit_button', 'n_clicks')]
+)
+def update_scatter(symbol, start_date, end_date, n_clicks):
+    if n_clicks == 0:
+        ticker_data = yf.Ticker('TSLA')
+        df = ticker_data.history(period='1d', start=datetime(2015, 1, 1), end=datetime.now())
+
+    else:
+        ticker_data = yf.Ticker(symbol)
+        df = ticker_data.history(period='1d', start=start_date, end=end_date)
+
+    first = go.Scatter(x=df.index,
+                       y=df['Close'])
+
+    data = [first]
+
+    figure = {'data': data,
+              'layout': {
+                  'title': symbol,
+                  'plot_bgcolor': colors['background'],
+                  'paper_bgcolor': colors['background'],
+                  'font': {
+                      'color': colors['text'],
+                      'size': 18
+                  }}
+              }
+    return figure
+
+
+# app callback to update candlestick stock values
 @app.callback(
     Output('graph_candle', 'figure'),
     [Input('dropdown_symbol', 'value'),
@@ -102,20 +139,16 @@ def update_graph(symbol, start_date, end_date, n_clicks):
 
     data = [first]
 
-    layout = go.Layout(title={
-        'text': symbol,
-        'y': 0.9,
-        'x': 0.5,
-        'xanchor': 'center',
-        'yanchor': 'top'},
-        font=dict(
-            family="Times New Roman",
-            size=20,
-            color="#7f7f7f"
-    )
-    )
-
-    figure = {'data': data, 'layout': layout}
+    figure = {'data': data,
+              'layout': {
+                  'title': symbol,
+                  'plot_bgcolor': colors['background'],
+                  'paper_bgcolor': colors['background'],
+                  'font': {
+                      'color': colors['text'],
+                      'size': 18
+                  }}
+              }
     return figure
 
 
