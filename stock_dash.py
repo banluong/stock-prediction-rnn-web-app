@@ -25,7 +25,7 @@ colors = {
     'text': '#1DB954'
 }
 
-app.layout = html.Div(style={'backgroundColor': colors['background'], 'font-family': "Helvetica"}, children=[
+app.layout = html.Div(style={'backgroundColor': colors['background'], 'font-family':"Helvetica"}, children=[
     html.H1(
         children='Stock Price Dashboard',
         style={
@@ -75,19 +75,19 @@ app.layout = html.Div(style={'backgroundColor': colors['background'], 'font-fami
     ),
     dcc.Graph(
         id='graph_candle'
+    ),
+    dcc.Graph(
+        id='graph_volume'
     )
 ])
 
 # app callback to update stock closing values
-
-
 @app.callback(
     Output('graph_scatter', 'figure'),
     [Input('dropdown_symbol', 'value'),
      Input('date_range', 'start_date'),
      Input('date_range', 'end_date'),
-     Input('submit_button', 'n_clicks')]
-)
+     Input('submit_button', 'n_clicks')])
 def update_scatter(symbol, start_date, end_date, n_clicks):
     if n_clicks == 0:
         ticker_data = yf.Ticker('TSLA')
@@ -104,7 +104,7 @@ def update_scatter(symbol, start_date, end_date, n_clicks):
 
     figure = {'data': data,
               'layout': {
-                  'title': symbol,
+                  'title': str(symbol) + " closing value",
                   'plot_bgcolor': colors['background'],
                   'paper_bgcolor': colors['background'],
                   'font': {
@@ -141,7 +141,40 @@ def update_graph(symbol, start_date, end_date, n_clicks):
 
     figure = {'data': data,
               'layout': {
-                  'title': symbol,
+                  'title': str(symbol) + " candlestick chart",
+                  'plot_bgcolor': colors['background'],
+                  'paper_bgcolor': colors['background'],
+                  'font': {
+                      'color': colors['text'],
+                      'size': 18
+                  }}
+              }
+    return figure
+
+# Visual of stock volume
+@app.callback(
+    Output('graph_volume', 'figure'),
+    [Input('dropdown_symbol', 'value'),
+     Input('date_range', 'start_date'),
+     Input('date_range', 'end_date'),
+     Input('submit_button', 'n_clicks')])
+def update_scatter(symbol, start_date, end_date, n_clicks):
+    if n_clicks == 0:
+        ticker_data = yf.Ticker('TSLA')
+        df = ticker_data.history(period='1d', start=datetime(2015, 1, 1), end=datetime.now())
+
+    else:
+        ticker_data = yf.Ticker(symbol)
+        df = ticker_data.history(period='1d', start=start_date, end=end_date)
+
+    first = go.Scatter(x=df.index,
+                       y=df['Volume'])
+
+    data = [first]
+
+    figure = {'data': data,
+              'layout': {
+                  'title': str(symbol) + " trading volume",
                   'plot_bgcolor': colors['background'],
                   'paper_bgcolor': colors['background'],
                   'font': {
