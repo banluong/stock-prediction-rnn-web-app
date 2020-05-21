@@ -5,6 +5,7 @@ from dash.dependencies import Input, Output
 import pandas as pd
 from datetime import datetime
 import yfinance as yf
+from fbprophet import Prophet
 import plotly.graph_objects as go
 
 
@@ -100,7 +101,10 @@ def update_scatter(symbol, start_date, end_date, n_clicks):
     first = go.Scatter(x=df.index,
                        y=df['Close'])
 
-    data = [first]
+    sec = go.Scatter(x=df.index,
+                       y=df['Close'][:datetime(2020, 1, 1)])
+
+    data = [first, sec]
 
     figure = {'data': data,
               'layout': {
