@@ -26,7 +26,7 @@ colors = {
     'text': '#1DB954'
 }
 
-app.layout = html.Div(style={'backgroundColor': colors['background'], 'font-family':"Helvetica"}, children=[
+app.layout = html.Div(style={'backgroundColor': colors['background'], 'font-family': "Helvetica"}, children=[
     html.H1(
         children='Stock Price Dashboard',
         style={
@@ -83,6 +83,8 @@ app.layout = html.Div(style={'backgroundColor': colors['background'], 'font-fami
 ])
 
 # app callback to update stock closing values
+
+
 @app.callback(
     Output('graph_scatter', 'figure'),
     [Input('dropdown_symbol', 'value'),
@@ -101,10 +103,7 @@ def update_scatter(symbol, start_date, end_date, n_clicks):
     first = go.Scatter(x=df.index,
                        y=df['Close'])
 
-    sec = go.Scatter(x=df.index,
-                       y=df['Close'][:datetime(2020, 1, 1)])
-
-    data = [first, sec]
+    data = [first]
 
     figure = {'data': data,
               'layout': {
@@ -156,6 +155,8 @@ def update_graph(symbol, start_date, end_date, n_clicks):
     return figure
 
 # Visual of stock volume
+
+
 @app.callback(
     Output('graph_volume', 'figure'),
     [Input('dropdown_symbol', 'value'),
