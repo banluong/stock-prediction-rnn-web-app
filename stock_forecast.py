@@ -28,14 +28,14 @@ colors = {
 
 app.layout = html.Div(style={'backgroundColor': colors['background'], 'font-family': "Helvetica"}, children=[
     html.H1(
-        children='Stock Price Dashboard',
+        children='Stock Forecast Dashboard',
         style={
             'textAlign': 'center',
             'color': colors['text']
         }
     ),
 
-    html.Div(children='Stock price chart web application framework for Python.', style={
+    html.Div(children='Stock price forecasting chart web application framework for Python.', style={
         'textAlign': 'center',
         'color': colors['text']
     }),
